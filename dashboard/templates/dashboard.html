@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Command Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#0f172a',
+                            light: '#e2e8f0',
+                            accent: '#3b82f6',
+                            success: '#22c55e',
+                            warning: '#eab308'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+        }
+    </style>
+</head>
+
+<body class=" antialiased min-h-screen p-8">
+
+    <!-- Header -->
+    <header class="mb-10 flex justify-between items-center">
+        <div>
+            <h1 class="text-4xl font-bold text-white tracking-tight">AI Command Center</h1>
+            <p class="text-slate-400 mt-2">Orchestrating Hunter, Strategist, and Finance Agents</p>
+        </div>
+        <div class="flex gap-4 items-center">
+            <form action="/reset-dashboard" method="POST">
+                <button type="submit"
+                    class="text-sm text-slate-500 hover:text-white underline decoration-dotted transition"
+                    title="Clear Search Session">
+                    Reset View
+                </button>
+            </form>
+            <div class="glass-panel px-6 py-3 text-center">
+                <span class="block text-2xl font-bold text-brand-accent">{{ leads|length }}</span>
+                <span class="text-xs text-slate-400 uppercase tracking-wider">New Leads</span>
+            </div>
+            <div class="glass-panel px-6 py-3 text-center">
+                <span class="block text-2xl font-bold text-brand-success">{{ strategies|length }}</span>
+                <span class="text-xs text-slate-400 uppercase tracking-wider">Strategies</span>
+            </div>
+            <div class="glass-panel px-6 py-3 text-center">
+                <span class="block text-2xl font-bold text-brand-warning">{{ invoices|length }}</span>
+                <span class="text-xs text-slate-400 uppercase tracking-wider">Invoices</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Unified Search & Action Bar -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+        <div class="lg:col-span-2 glass-panel p-6">
+            <h3 class="text-sm font-semibold text-slate-400 uppercase mb-4 tracking-widest">Trigger Lead Hunt</h3>
+            <form action="/search-leads" method="POST" class="flex flex-wrap gap-4">
+                <input type="text" name="city" placeholder="City (e.g. London)"
+                    class="bg-brand-dark/50 border border-slate-700 rounded-lg px-4 py-2 flex-1 min-w-[200px] text-white focus:border-brand-accent outline-none"
+                    required>
+                <select name="segment"
+                    class="bg-brand-dark/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-brand-accent outline-none">
+                    <option value="Coworking">Coworking</option>
+                    <option value="Architect">Architect</option>
+                    <option value="Corporate">Corporate</option>
+                </select>
+                <input type="number" name="limit" value="5"
+                    class="bg-brand-dark/50 border border-slate-700 rounded-lg px-4 py-2 w-20 text-white outline-none">
+                <button type="submit"
+                    class="bg-brand-accent hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg transition shadow-lg shadow-blue-500/20">
+                    Search Leads
+                </button>
+            </form>
+        </div>
+        <div class="glass-panel p-6 flex flex-col justify-center items-center text-center">
+            <h3 class="text-sm font-semibold text-slate-400 uppercase mb-4 tracking-widest">Orchestrate</h3>
+            <button onclick="runStrategist()" id="stratBtn"
+                class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-8 py-3 rounded-lg transition w-full shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2 mb-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+                Run Strategist Agent
+            </button>
+
+            <div class="border-t border-slate-700 pt-4 mt-2">
+                <h3 class="text-sm font-semibold text-slate-400 uppercase mb-3 tracking-widest">Finance Trigger</h3>
+                <form action="/create-invoice" method="POST" class="flex gap-2">
+                    <input type="number" name="order_id" placeholder="Order ID"
+                        class="bg-brand-dark/50 border border-slate-700 rounded-lg px-3 py-2 flex-1 text-white text-sm focus:border-brand-warning outline-none"
+                        required>
+                    <button type="submit"
+                        class="bg-brand-warning hover:bg-yellow-600 text-brand-dark font-bold px-4 py-2 rounded-lg text-sm transition">
+                        Generate Invoice
+                    </button>
+                </form>
+            </div>
+
+            <script>
+                async function runStrategist() {
+                    const btn = document.getElementById('stratBtn');
+                    btn.disabled = true;
+                    btn.innerText = "Processing...";
+                    try {
+                        const res = await fetch('/run-strategist', { method: 'POST' });
+                        const data = await res.json();
+                        if (data.status === 'success') {
+                            alert('Strategies updated in great.md!');
+                            window.location.reload();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    } catch (err) {
+                        alert('Failed to connect to agent.');
+                    }
+                    btn.disabled = false;
+                    btn.innerText = "Run Strategist Agent";
+                }
+            </script>
+        </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- Column 1: Hunter Agent (Leads) -->
+        <section class="space-y-6">
+            <h2 class="text-xl font-semibold text-brand-accent flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                Hunter Agent
+            </h2>
+            <div class="glass-panel p-4 space-y-4">
+                {% for lead in leads %}
+                <div class="border-b border-slate-700 pb-3 last:border-0 last:pb-0">
+                    <h3 class="font-bold text-white flex justify-between items-center gap-2">
+                        {% if lead.website %}
+                        <a href="{{ lead.website }}" target="_blank"
+                            class="hover:text-blue-400 transition flex items-center gap-1 group">
+                            {{ lead.company }}
+                            <svg class="w-3 h-3 text-slate-500 group-hover:text-blue-400" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14">
+                                </path>
+                            </svg>
+                        </a>
+                        {% else %}
+                        {{ lead.company }}
+                        {% endif %}
+
+                        <!-- Status Indicator -->
+                        {% if lead.status == 'SELECTED' %}
+                        <span title="Selected by Strategist"
+                            class="text-green-500 bg-green-900/30 rounded-full p-1"><svg class="w-4 h-4" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg></span>
+                        {% elif lead.status == 'FAILED' %}
+                        <span title="Ignored/Failed" class="text-red-500 bg-red-900/30 rounded-full p-1"><svg
+                                class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg></span>
+                        {% else %}
+                        <span title="Pending"
+                            class="text-yellow-500 bg-yellow-900/30 rounded-full w-2 h-2 bloack"></span>
+                        {% endif %}
+                    </h3>
+                    <p class="text-sm text-slate-400 truncate">{{ lead.intent_signal }}</p>
+                    <span class="inline-block mt-2 px-2 py-1 bg-green-900/50 text-green-400 text-xs rounded-full">Score:
+                        {{ lead.intent_score }}</span>
+                </div>
+                {% else %}
+                <p class="text-slate-500 italic">No leads found.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Column 2: Strategist Agent (Plans) -->
+        <section class="space-y-6">
+            <h2 class="text-xl font-semibold text-purple-400 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
+                    </path>
+                </svg>
+                Strategist Agent
+            </h2>
+            <div class="space-y-4">
+                {% for strat in strategies %}
+                <div class="glass-panel p-5 transform transition hover:scale-[1.02] duration-200">
+                    <h3 class="font-bold text-white mb-2">{{ strat.company }}</h3>
+                    <div class="mb-3">
+                        <span class="text-xs text-purple-300 uppercase font-semibold">Hook</span>
+                        <p class="text-sm text-slate-300 mt-1 italic">"{{ strat.hook }}"</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 uppercase font-semibold">Reflection</span>
+                        <p class="text-xs text-slate-500 mt-1">{{ strat.reflection }}</p>
+                    </div>
+                </div>
+                {% else %}
+                <div class="glass-panel p-4 text-center text-slate-500">
+                    Run the Strategist Agent to verify leads.
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Column 3: Finance Agent (Invoices) -->
+        <section class="space-y-6">
+            <h2 class="text-xl font-semibold text-brand-warning flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                    </path>
+                </svg>
+                Finance Agent
+            </h2>
+            <div class="glass-panel p-4">
+                <table class="w-full text-left text-sm">
+                    <thead>
+                        <tr class="text-slate-500 border-b border-slate-700">
+                            <th class="pb-2">Details</th>
+                            <th class="pb-2 text-right">Amount</th>
+                            <th class="pb-2 text-right">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        {% for inv in invoices %}
+                        <tr>
+                            <td class="py-3">
+                                <span class="block text-white font-medium">{{ inv.invoice_number }}</span>
+                                <span class="text-xs text-slate-400">{{ inv.due_date }}</span>
+                            </td>
+                            <td class="py-3 text-right text-white">₹{{ inv.total_amount }}</td>
+                            <td class="py-3 text-right">
+                                <span class="px-2 py-1 rounded text-xs font-bold
+                                    {% if inv.status == 'PAID' %} bg-green-900 text-green-400
+                                    {% else %} bg-red-900 text-red-400 {% endif %}">
+                                    {{ inv.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="3" class="py-4 text-center text-slate-500">No invoices generated.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+
+</body>
+
+</html>
