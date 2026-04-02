@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice Dashboard</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { padding: 10px; border: 1px solid #ddd; }
+        th { background-color: #f4f4f4; }
+        .high { background-color: #ffcccc; }
+        .critical { background-color: #ff6666; }
+        button { padding: 5px 10px; }
+    </style>
+</head>
+<body>
+
+<h2>Invoices</h2>
+
+<table>
+    <tr>
+        <th>Invoice</th>
+        <th>Amount</th>
+        <th>Status</th>
+        <th>Days Overdue</th>
+        <th>Risk</th>
+        <th>Action</th>
+    </tr>
+
+    {% for invoice in invoices %}
+    <tr class="{% if invoice.risk_level == 'HIGH' %}high{% elif invoice.risk_level == 'CRITICAL' %}critical{% endif %}">
+        <td>{{ invoice.invoice_number }}</td>
+        <td>₹{{ invoice.total_amount }}</td>
+        <td>{{ invoice.status }}</td>
+        <td>{{ invoice.days_overdue }}</td>
+        <td>{{ invoice.risk_level }}</td>
+        <td>
+            {% if invoice.status != 'PAID' %}
+            <form action="/mark-paid/{{ invoice.id }}" method="post">
+                <button type="submit">Mark Paid</button>
+            </form>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+<h2>Alerts</h2>
+
+<table>
+    <tr>
+        <th>Invoice ID</th>
+        <th>Severity</th>
+        <th>Message</th>
+    </tr>
+
+    {% for alert in alerts %}
+    <tr>
+        <td>{{ alert.invoice_id }}</td>
+        <td>{{ alert.severity }}</td>
+        <td>{{ alert.message }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+</body>
+</html>

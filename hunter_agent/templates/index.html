@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hunter AI Lead Finder</title>
+    <style>
+    body {
+        font-family: Arial;
+        background: #f8fafc;
+        padding: 40px;
+    }
+
+    h1 {
+        margin-bottom: 25px;
+    }
+
+    form {
+        background: rgb(236, 12, 12);
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    input, select {
+        padding: 8px;
+        margin-right: 10px;
+    }
+
+    button {
+        padding: 8px 15px;
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    th {
+        background: #1e40af;
+        color: white;
+        padding: 12px;
+        text-align: left;
+    }
+
+    td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    tr:hover {
+        background: #f1f5f9;
+    }
+
+    .score-high {
+        color: white;
+        background: #16a34a;
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+
+    .score-medium {
+        color: white;
+        background: #f59e0b;
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+
+    .score-low {
+        color: white;
+        background: #ef4444;
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+</style>
+
+</head>
+<body>
+
+<h1>🔥 Hunter AI - B2B Lead Intelligence</h1>
+
+<form method="POST">
+    City:
+    <input type="text" name="city" required>
+
+    Segment:
+    <select name="segment">
+        <option>Coworking</option>
+        <option>Architect</option>
+        <option>Corporate</option>
+    </select>
+
+    Leads:
+    <input type="number" name="limit" value="5" min="1" max="20">
+
+    <button type="submit">Find Leads</button>
+</form>
+
+{% if leads %}
+<table>
+    <tr>
+        <th>#</th>
+        <th>Company</th>
+        <th>Intent Signal</th>
+        <th>Score</th>
+        <th>Website</th>
+    </tr>
+
+    {% for lead in leads %}
+<tr>
+    <td>{{ loop.index }}</td>
+    <td><strong>{{ lead.company }}</strong></td>
+    <td>{{ lead.intent_signal }}</td>
+
+    <td>
+        {% if lead.intent_score >= 8 %}
+            <span class="score-high">{{ lead.intent_score }}</span>
+        {% elif lead.intent_score >= 6 %}
+            <span class="score-medium">{{ lead.intent_score }}</span>
+        {% else %}
+            <span class="score-low">{{ lead.intent_score }}</span>
+        {% endif %}
+    </td>
+
+    <td><a href="{{ lead.website }}" target="_blank">Visit</a></td>
+</tr>
+{% endfor %}
+
+</table>
+{% endif %}
+
+</body>
+</html>

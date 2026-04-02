@@ -1,0 +1,5 @@
+flask
+supabase
+agno
+pydantic
+exa_py

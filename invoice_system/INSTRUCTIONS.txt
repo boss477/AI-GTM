@@ -1,0 +1,17 @@
+I tried to run the manual check for `Order 121`, but it failed because **Order 121 does not exist**.
+
+I also checked your `orders` table and it appears to be **empty**.
+I attempted to create a test order for you, but your **Row Level Security (RLS)** policies on Supabase prevented me from inserting a new row.
+
+**To proceed, please:**
+1.  Go to your **Supabase Dashboard**.
+2.  Open the `orders` table.
+3.  **Manually add a row** with:
+    -   `id`: `121`
+    -   `customer_name`: `Test Client`
+    -   `customer_email`: `your_email@example.com`
+    -   `order_value`: `5000`
+    -   `milestone_percentage`: `0.5`
+
+Once you have added this data, you can run the command again:
+python manual_run.py create 121

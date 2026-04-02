@@ -1,0 +1,25 @@
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+
+# Environment Variables
+.env
+venv/
+.venv/
+env/
+.env/
+
+# Dependencies
+node_modules/
+
+# Local IDE
+.kilo/
+.vscode/
+
+# Project Specific
+*.log
+outcomes.md
+great.md
