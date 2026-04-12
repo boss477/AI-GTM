@@ -31,15 +31,15 @@ def check_supabase_reachable(url, name):
 
 def get_supabase_client(url, key, name):
     if not url or not key:
-        print(f"⚠️ Critical: Missing URL or key for Supabase {name}")
+        print(f"Critical: Missing URL or key for Supabase {name}")
         return None
     if not check_supabase_reachable(url, name):
-        print(f"⚠️ Critical: Cannot reach Supabase {name} at {url}")
+        print(f"Critical: Cannot reach Supabase {name} at {url}")
         return None
     try:
         return create_client(url, key)
     except Exception as e:
-        print(f"⚠️ Critical: Failed to initialize Supabase {name}: {e}")
+        print(f"Critical: Failed to initialize Supabase {name}: {e}")
         return None
 
 
@@ -63,7 +63,7 @@ invoice_db = get_supabase_client(
 @app.errorhandler(500)
 @app.errorhandler(Exception)
 def handle_error(e):
-    print(f"🛑 Global Error Caught: {e}")
+    print(f"Global Error Caught: {e}")
     # Instead of crashing, we gracefully inform the user
     return (
         f"<h3>⚠️ Internal Dashboard Error</h3><p>{str(e)}</p><p><a href='/'>Click here to refresh and try again.</a></p>",
@@ -271,8 +271,9 @@ def create_invoice_route():
         if "Invoice created successfully" in result.stdout:
             return redirect(url_for("dashboard"))
         else:
+            err_msg = f"{result.stdout}\n{result.stderr}".strip()
             return jsonify(
-                {"status": "error", "message": result.stdout or result.stderr}
+                {"status": "error", "message": err_msg}
             )
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)})
