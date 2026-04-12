@@ -8,6 +8,8 @@ import socket
 from urllib.parse import urlparse
 from typing import Optional
 
+from dotenv import load_dotenv
+
 # Loading environment variables
 load_dotenv()
 

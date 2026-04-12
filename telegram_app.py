@@ -1,12 +1,14 @@
 import os
 import asyncio
 import logging
+import random
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 from dotenv import load_dotenv
 
 # Import our Unified Agent
 from unified_agent import get_unified_agent
+from unified_toolkit import UnifiedToolkit
 
 # Load Environment and Configure logger
 load_dotenv()
@@ -44,33 +46,46 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"⚠️ Sorry, I encountered an error: {str(e)}")
 
 async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Downloads the photo from Telegram and sends it to the Qwen model for analysis."""
-    photo_file = await update.message.photo[-1].get_file()
-    
-    # Send as binary to Agno for analysis
+    """Downloads the photo from Telegram and tracks state to handle 1st vs 2nd photo."""
     await context.bot.send_chat_action(chat_id=update.effective_chat.id, action="typing")
     
+    # Track the number of photos sent in this session
+    count = context.user_data.get('photo_count', 0)
+    count += 1
+    context.user_data['photo_count'] = count
+    
     try:
-        # Download file to memory
-        import base64
-        file_bytes = await photo_file.download_as_bytearray()
-        base64_image = base64.b64encode(file_bytes).decode('utf-8')
-
-        logger.info("Sending photo to Qwen for analysis...")
-        
-        # In Agno, we can provide image content in the run method
-        # Format depends on model, but standard is a dict with type image_url
-        response = agent.run(
-            "Please analyze this image and provide a strategic summary based on your identity.",
-            images=[f"data:image/jpeg;base64,{base64_image}"]
-        )
-        
-        output = str(response.content if hasattr(response, 'content') else response)
-        await update.message.reply_text(output, parse_mode='Markdown')
-
+        if count == 1:
+            await update.message.reply_text("This furniture is not available right now.")
+        else:
+            # 2nd picture (or more): Upload and respond with random price
+            photo_file = await update.message.photo[-1].get_file()
+            file_bytes = await photo_file.download_as_bytearray()
+            
+            toolkit = UnifiedToolkit()
+            public_url = toolkit.upload_furniture_image(bytes(file_bytes))
+            
+            if "Error" in public_url:
+                await update.message.reply_text(f"⚠️ Failed to save image to storage: {public_url}")
+            else:
+                price = random.randint(5000, 25000)
+                await update.message.reply_text(f"This furniture is available ✅ Wanna buy? Its price is Rs. {price:,}")
+                
+                # Generate formal Performa Invoice and send the real document
+                inv_result = toolkit.create_telegram_invoice(public_url, price)
+                if isinstance(inv_result, dict) and "absolute_pdf_path" in inv_result:
+                    with open(inv_result["absolute_pdf_path"], "rb") as pdf_file:
+                        await update.message.reply_document(
+                            document=pdf_file,
+                            filename=f"Invoice_{inv_result.get('invoice_number', 'PI')}.pdf",
+                            caption="🧾 Here is the formal Performa Invoice for your request!"
+                        )
+                else:
+                    await update.message.reply_text(f"⚠️ Could not generate invoice document: {inv_result}")
+                
     except Exception as e:
-        logger.error(f"Error analyzing photo: {e}")
-        await update.message.reply_text(f"⚠️ I received the photo, but had trouble analyzing it: {str(e)}")
+        logger.error(f"Error handling photo: {e}")
+        await update.message.reply_text(f"⚠️ I received the photo, but had trouble linking it: {str(e)}")
 
 if __name__ == '__main__':
     # Get token from .env
@@ -87,7 +102,7 @@ if __name__ == '__main__':
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle_message))
     application.add_handler(MessageHandler(filters.PHOTO, handle_photo))
     
-    print("🚀 ARIA Telegram Bot is starting locally on port 8000...")
+    print("ARIA Telegram Bot is starting locally on port 8000...")
     print("Talk to your bot at t.me/vijau_bot")
     
     application.run_polling()
