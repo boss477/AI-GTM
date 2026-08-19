@@ -1,0 +1,10 @@
+# Furniture Lead Agent - Requirements
+streamlit
+exa-py
+supabase
+python-telegram-bot
+python-dotenv
+pandas
+agno
+langgraph
+langchain-core
