@@ -1,0 +1,14 @@
+# Dependencies for the services deployed from the repository root
+# (dashboard/ Flask app and telegram_app.py bot).
+# Service-specific projects keep their own requirements.txt.
+flask
+gunicorn
+supabase
+python-dotenv
+agno
+openai
+exa_py
+httpx
+reportlab
+apscheduler
+python-telegram-bot

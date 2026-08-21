@@ -5,13 +5,14 @@ import json
 import re
 import subprocess
 import socket
+import sys
 from datetime import datetime, timezone
 from dotenv import load_dotenv
 from agno.tools.exa import ExaTools
 
 app = Flask(__name__)
-app.secret_key = "super_secret_key_for_demo_session"  # Required for session
 load_dotenv()
+app.secret_key = os.getenv("FLASK_SECRET_KEY", "super_secret_key_for_demo_session")
 
 
 def check_supabase_reachable(url, name):
@@ -44,19 +45,17 @@ def get_supabase_client(url, key, name):
 
 
 # Hunter Agent Supabase
-HUNTER_URL = "https://wpceiqvcdxdnpvfbqxot.supabase.co"
-HUNTER_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwY2VpcXZjZHhkbnB2ZmJxeG90Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNTAyMTcsImV4cCI6MjA4NjcyNjIxN30.ppvw-2QdVdxWMXkDzVd98yKDUdAbic2YzP3HpyGAHCk"
-EXA_API_KEY = "a4760db1-3cec-4897-9cd7-3be40b7c61eb"
+HUNTER_URL = os.getenv("SUPABASE_URL")
+HUNTER_KEY = os.getenv("SUPABASE_KEY")
+EXA_API_KEY = os.getenv("EXA_API_KEY")
 
 hunter_db = get_supabase_client(HUNTER_URL, HUNTER_KEY, "Hunter")
 exa_tools = ExaTools(api_key=EXA_API_KEY, text=True)
 
 # Invoice Agent Supabase
-INVOICE_URL_HARDCODED = "https://uiqzkfawnswsrhxkambl.supabase.co"
-INVOICE_KEY_HARDCODED = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpcXprZmF3bnN3c3JoeGthbWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA5MDU1MjcsImV4cCI6MjA4NjQ4MTUyN30.yhXrNZFnKIioIdClEU7OWGdzJKmjXp7NUluhgRkRR8g"
-invoice_db = get_supabase_client(
-    INVOICE_URL_HARDCODED, INVOICE_KEY_HARDCODED, "Invoice"
-)
+INVOICE_URL = os.getenv("INVOICE_SUPABASE_URL")
+INVOICE_KEY = os.getenv("INVOICE_SUPABASE_KEY")
+invoice_db = get_supabase_client(INVOICE_URL, INVOICE_KEY, "Invoice")
 
 
 # Global Error Handler: Prevents the server from exiting on uncaught exceptions
@@ -247,7 +246,7 @@ def search_leads():
 def run_strategist():
     try:
         path = os.path.join(os.path.dirname(__file__), "..", "strategist_agent")
-        subprocess.run(["python", "workflow.py"], cwd=path)
+        subprocess.run([sys.executable, "workflow.py"], cwd=path)
         return jsonify({"status": "success"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)})
@@ -262,7 +261,7 @@ def create_invoice_route():
     try:
         path = os.path.join(os.path.dirname(__file__), "..", "invoice_system")
         result = subprocess.run(
-            ["python", "manual_run.py", "create", order_id],
+            [sys.executable, "manual_run.py", "create", order_id],
             cwd=path,
             capture_output=True,
             text=True,
@@ -286,4 +285,4 @@ def reset_dashboard():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=int(os.getenv("PORT", 5000)))
