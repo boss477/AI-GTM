@@ -1,17 +1,16 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, session
 from supabase import create_client, Client
 import os
-import json
-import re
 import subprocess
 import socket
 from datetime import datetime, timezone
 from dotenv import load_dotenv
-from agno.tools.exa import ExaTools
+from exa_py import Exa
+
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = "super_secret_key_for_demo_session"  # Required for session
-load_dotenv()
+app.secret_key = os.getenv("FLASK_SECRET_KEY", "dev-only-secret-key")
 
 
 def check_supabase_reachable(url, name):
@@ -44,19 +43,17 @@ def get_supabase_client(url, key, name):
 
 
 # Hunter Agent Supabase
-HUNTER_URL = "https://wpceiqvcdxdnpvfbqxot.supabase.co"
-HUNTER_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwY2VpcXZjZHhkbnB2ZmJxeG90Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNTAyMTcsImV4cCI6MjA4NjcyNjIxN30.ppvw-2QdVdxWMXkDzVd98yKDUdAbic2YzP3HpyGAHCk"
-EXA_API_KEY = "a4760db1-3cec-4897-9cd7-3be40b7c61eb"
+HUNTER_URL = os.getenv("HUNTER_SUPABASE_URL", "")
+HUNTER_KEY = os.getenv("HUNTER_SUPABASE_KEY", "")
+EXA_API_KEY = os.getenv("EXA_API_KEY", "")
 
 hunter_db = get_supabase_client(HUNTER_URL, HUNTER_KEY, "Hunter")
-exa_tools = ExaTools(api_key=EXA_API_KEY, text=True)
+exa = Exa(api_key=EXA_API_KEY) if EXA_API_KEY else None
 
 # Invoice Agent Supabase
-INVOICE_URL_HARDCODED = "https://uiqzkfawnswsrhxkambl.supabase.co"
-INVOICE_KEY_HARDCODED = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpcXprZmF3bnN3c3JoeGthbWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA5MDU1MjcsImV4cCI6MjA4NjQ4MTUyN30.yhXrNZFnKIioIdClEU7OWGdzJKmjXp7NUluhgRkRR8g"
-invoice_db = get_supabase_client(
-    INVOICE_URL_HARDCODED, INVOICE_KEY_HARDCODED, "Invoice"
-)
+INVOICE_URL = os.getenv("INVOICE_SUPABASE_URL", "")
+INVOICE_KEY = os.getenv("INVOICE_SUPABASE_KEY", "")
+invoice_db = get_supabase_client(INVOICE_URL, INVOICE_KEY, "Invoice")
 
 
 # Global Error Handler: Prevents the server from exiting on uncaught exceptions
@@ -103,20 +100,19 @@ def extract_company_name(title):
 
 
 def hunter_agent_search(city, segment, limit):
+    if not exa:
+        raise RuntimeError("EXA_API_KEY is not configured")
+
     query = build_query(city, segment)
-    search_results_json = exa_tools.search_exa(query=query, num_results=int(limit))
-    try:
-        results = json.loads(search_results_json)
-    except:
-        results = []
+    response = exa.search_and_contents(query, num_results=int(limit), text=True)
 
     leads = []
-    for r in results:
-        text_content = r.get("text", "")
+    for r in response.results:
+        text_content = getattr(r, "text", "") or ""
         leads.append(
             {
-                "company": extract_company_name(r.get("title", "")),
-                "website": r.get("url", ""),
+                "company": extract_company_name(r.title or ""),
+                "website": r.url or "",
                 "intent_signal": (text_content or "")[:120],
                 "intent_score": score_intent(text_content or ""),
                 "city": city,
@@ -166,7 +162,7 @@ def dashboard():
             "<h3>⚠️ Hunter Supabase is not reachable.</h3>"
             f"<p>URL: {HUNTER_URL}</p>"
             "<p>The Supabase project may be paused, deleted, or the URL is incorrect.</p>"
-            "<p>Go to <a href='https://supabase.com/dashboard'>Supabase Dashboard</a> to check your project, then update HUNTER_URL in dashboard/app.py.</p>",
+            "<p>Go to <a href='https://supabase.com/dashboard'>Supabase Dashboard</a> to check your project, then update HUNTER_SUPABASE_URL / HUNTER_SUPABASE_KEY in the environment.</p>",
             503,
         )
 
