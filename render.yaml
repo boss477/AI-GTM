@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: ai-gtm-dashboard
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --chdir dashboard --bind 0.0.0.0:$PORT app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.6"
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: EXA_API_KEY
+        sync: false
+      - key: HUNTER_SUPABASE_URL
+        sync: false
+      - key: HUNTER_SUPABASE_KEY
+        sync: false
+      - key: INVOICE_SUPABASE_URL
+        sync: false
+      - key: INVOICE_SUPABASE_KEY
+        sync: false
