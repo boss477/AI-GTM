@@ -243,7 +243,12 @@ def search_leads():
 def run_strategist():
     try:
         path = os.path.join(os.path.dirname(__file__), "..", "strategist_agent")
-        subprocess.run(["python", "workflow.py"], cwd=path)
+        result = subprocess.run(
+            ["python", "workflow.py"], cwd=path, capture_output=True, text=True
+        )
+        if result.returncode != 0:
+            err_msg = f"{result.stdout}\n{result.stderr}".strip()
+            return jsonify({"status": "error", "message": err_msg})
         return jsonify({"status": "success"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)})

@@ -51,6 +51,10 @@ python dashboard/app.py   # http://localhost:5000
   directories. Those directories are not uploaded and the serverless runtime has no
   writable project checkout, so both routes return an error JSON in production. Run
   them locally or move them to an always-on worker.
+- The Strategist column is always empty in production: `parse_strategies()` reads
+  `strategist_agent/great.md`, which is gitignored and excluded from the upload.
+- Set `FLASK_SECRET_KEY` in Vercel. Without it the app falls back to a literal key that
+  is public in this repo, so session cookies would be forgeable.
 - Flask's session cookie holds the `last_search_time` filter; nothing else is stateful.
 - Rotate the Exa and Supabase keys that were previously hardcoded in this repo — they
   are still in the git history and must be considered public.
