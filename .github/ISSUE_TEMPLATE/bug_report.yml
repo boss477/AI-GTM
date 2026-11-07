@@ -1,0 +1,44 @@
+name: Bug report
+description: Something is broken or behaves unexpectedly
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. For **security problems**, do not file a public issue; see
+        [SECURITY.md](https://github.com/boss477/AI-GTM/blob/main/SECURITY.md). Never paste keys or
+        customer data here.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Component
+      options:
+        - strategist_agent
+        - hunter_agent
+        - furniture-agent
+        - invoice_system
+        - dashboard
+        - unified agent / Telegram bot
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what you saw instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: 'Windows 11, Python 3.12'
+    validations:
+      required: true

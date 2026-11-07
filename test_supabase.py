@@ -1,11 +1,15 @@
 """
 Test script to verify Supabase connection and insert a test lead
 """
+import os
+from dotenv import load_dotenv
 from supabase import create_client
 
-# Replace with your actual Supabase credentials
-url = "https://aghavnajgmphznjpjpef.supabase.co"
-key = "***REMOVED***"
+load_dotenv()
+
+# Credentials come from the environment (see .env.example)
+url = os.environ["SUPABASE_URL"]
+key = os.environ["SUPABASE_ANON_KEY"]
 
 # Create Supabase client
 supabase = create_client(url, key)

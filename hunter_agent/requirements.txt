@@ -3,3 +3,4 @@ supabase
 agno
 pydantic
 exa_py
+python-dotenv

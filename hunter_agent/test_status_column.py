@@ -1,7 +1,11 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 from supabase import create_client, Client
 
-HUNTER_URL = "https://wpceiqvcdxdnpvfbqxot.supabase.co"
-HUNTER_KEY = "***REMOVED***"
+HUNTER_URL = os.environ["HUNTER_SUPABASE_URL"]
+HUNTER_KEY = os.environ["HUNTER_SUPABASE_KEY"]
 
 try:
     print("Connecting to Hunter Agent Supabase...")
