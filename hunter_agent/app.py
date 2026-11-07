@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+
+load_dotenv()
 from flask import Flask, render_template, request
 from agno.tools.exa import ExaTools
 from supabase import create_client, Client
@@ -10,13 +13,13 @@ app = Flask(__name__)
 # ---------------------------
 # Initialize Exa via Agno Tools
 # ---------------------------
-# Note: In a production environment, use environment variables for keys
-EXA_API_KEY = "a4760db1-3cec-4897-9cd7-3be40b7c61eb"
+# Keys come from the environment (see .env.example).
+EXA_API_KEY = os.environ["EXA_API_KEY"]
 exa_tools = ExaTools(api_key=EXA_API_KEY, text=True)
 
 # Supabase config
-SUPABASE_URL = "https://wpceiqvcdxdnpvfbqxot.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwY2VpcXZjZHhkbnB2ZmJxeG90Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNTAyMTcsImV4cCI6MjA4NjcyNjIxN30.ppvw-2QdVdxWMXkDzVd98yKDUdAbic2YzP3HpyGAHCk"
+SUPABASE_URL = os.environ["HUNTER_SUPABASE_URL"]
+SUPABASE_KEY = os.environ["HUNTER_SUPABASE_KEY"]
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
@@ -150,6 +153,6 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=os.environ.get("FLASK_DEBUG") == "1")
 
     

@@ -1,9 +1,13 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 from supabase import create_client, Client
 import json
 
-# Supabase config (copied from app.py)
-SUPABASE_URL = "https://wpceiqvcdxdnpvfbqxot.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwY2VpcXZjZHhkbnB2ZmJxeG90Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNTAyMTcsImV4cCI6MjA4NjcyNjIxN30.ppvw-2QdVdxWMXkDzVd98yKDUdAbic2YzP3HpyGAHCk"
+# Supabase config (from the environment, see .env.example)
+SUPABASE_URL = os.environ["HUNTER_SUPABASE_URL"]
+SUPABASE_KEY = os.environ["HUNTER_SUPABASE_KEY"]
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 

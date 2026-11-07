@@ -1,0 +1,39 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: syntax + credential scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Python syntax check (project code only)
+        run: >
+          python -m compileall -q strategist_agent hunter_agent furniture-agent invoice_system
+          dashboard unified_agent.py unified_toolkit.py telegram_app.py
+      - name: Credential scan (project code only)
+        run: |
+          set +e
+          HITS=$(git grep -n -I -E 'eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}.*(exa|EXA)|(exa|EXA)[A-Za-z_]*KEY *= *["'"'"'][^"'"'"']{12,}|sk-[A-Za-z0-9_-]{20,}|ghp_[A-Za-z0-9]{30,}|[0-9]{8,10}:AA[A-Za-z0-9_-]{30,}' -- . ':!agno' ':!langgraph' ':!agno-llms-full.txt' ':!.env.example')
+          if [ -n "$HITS" ]; then
+            echo "::error::Possible committed credential(s):"
+            echo "$HITS" | cut -c1-120
+            exit 1
+          fi
+          echo "No credentials found."

@@ -44,16 +44,16 @@ def get_supabase_client(url, key, name):
 
 
 # Hunter Agent Supabase
-HUNTER_URL = "https://wpceiqvcdxdnpvfbqxot.supabase.co"
-HUNTER_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwY2VpcXZjZHhkbnB2ZmJxeG90Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNTAyMTcsImV4cCI6MjA4NjcyNjIxN30.ppvw-2QdVdxWMXkDzVd98yKDUdAbic2YzP3HpyGAHCk"
-EXA_API_KEY = "a4760db1-3cec-4897-9cd7-3be40b7c61eb"
+HUNTER_URL = os.environ.get("HUNTER_SUPABASE_URL", "")
+HUNTER_KEY = os.environ.get("HUNTER_SUPABASE_KEY", "")
+EXA_API_KEY = os.environ.get("EXA_API_KEY", "")
 
 hunter_db = get_supabase_client(HUNTER_URL, HUNTER_KEY, "Hunter")
 exa_tools = ExaTools(api_key=EXA_API_KEY, text=True)
 
 # Invoice Agent Supabase
-INVOICE_URL_HARDCODED = "https://uiqzkfawnswsrhxkambl.supabase.co"
-INVOICE_KEY_HARDCODED = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpcXprZmF3bnN3c3JoeGthbWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA5MDU1MjcsImV4cCI6MjA4NjQ4MTUyN30.yhXrNZFnKIioIdClEU7OWGdzJKmjXp7NUluhgRkRR8g"
+INVOICE_URL_HARDCODED = os.environ.get("INVOICE_SUPABASE_URL", "")
+INVOICE_KEY_HARDCODED = os.environ.get("INVOICE_SUPABASE_KEY", "")
 invoice_db = get_supabase_client(
     INVOICE_URL_HARDCODED, INVOICE_KEY_HARDCODED, "Invoice"
 )
@@ -286,4 +286,4 @@ def reset_dashboard():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=os.environ.get("FLASK_DEBUG") == "1", port=5000)

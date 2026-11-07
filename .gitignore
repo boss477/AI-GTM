@@ -23,3 +23,9 @@ node_modules/
 *.log
 outcomes.md
 great.md
+
+# Local secrets and generated documents
+.env
+.env.*
+!.env.example
+invoice_system/invoices/
