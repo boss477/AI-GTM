@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="docs/images/logo.svg" alt="AI-GTM logo" width="128" />
+
 # AI-GTM
 
 **Turn market signals into approved GTM work your team can execute.**
