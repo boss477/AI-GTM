@@ -21,6 +21,9 @@ All notable changes to this project are documented here. The format follows
 
 ### Changed
 
+- Removed the bundled copies of `agno`, `langgraph` and `agno-llms-full.txt` (about 4,400 files). They are installed from PyPI through each component's `requirements.txt`.
+- Generated invoice PDFs are no longer tracked (they stay git-ignored; they remain in Git history).
+
 - `hunter_agent/requirements.txt` lists `python-dotenv`, which the app now uses.
 
 ## Earlier work

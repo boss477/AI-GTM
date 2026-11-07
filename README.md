@@ -87,16 +87,6 @@ reachable host.
 
 See [DESIGN.md](DESIGN.md) for the product design.
 
-## Third-party code
-
-The repository includes copies of upstream projects, each under its own license:
-
-- `agno/`: [Agno](https://github.com/agno-agi/agno), Apache License 2.0 (see `agno/LICENSE`)
-- `langgraph/`: [LangGraph](https://github.com/langchain-ai/langgraph), MIT License
-- `agno-llms-full.txt`: Agno documentation text
-
-These are not covered by this repository's license and are excluded from CI checks.
-
 ## Security
 
 Never commit credentials. See [SECURITY.md](SECURITY.md) for how secrets are handled and how to
@@ -108,4 +98,4 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUC
 
 ## License
 
-[MIT](LICENSE) © boss477, except the third-party directories listed above.
+[MIT](LICENSE) © boss477. Agno and LangGraph are installed from PyPI under their own licenses; this repository no longer bundles them.

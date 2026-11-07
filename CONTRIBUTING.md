@@ -22,8 +22,7 @@ See [Setup in the README](README.md#setup).
 python -m compileall -q strategist_agent hunter_agent furniture-agent invoice_system dashboard unified_agent.py unified_toolkit.py telegram_app.py
 ```
 
-CI runs the same syntax check and a credential scan on the project's own code (the vendored
-`agno/` and `langgraph/` directories are excluded).
+CI runs the same syntax check and a credential scan across the repository.
 
 - Add a line under **Unreleased** in [CHANGELOG.md](CHANGELOG.md).
 - Update the README if the change is user-facing.
