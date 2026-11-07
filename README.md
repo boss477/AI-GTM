@@ -22,10 +22,9 @@ operational tools instead of an ungrounded chatbot.
 3. [Setup](#setup)
 4. [Run](#run)
 5. [Design principles](#design-principles)
-6. [Third-party code](#third-party-code)
-7. [Security](#security)
-8. [Contributing](#contributing)
-9. [License](#license)
+6. [Security](#security)
+7. [Contributing](#contributing)
+8. [License](#license)
 
 ## Strategy workflow
 
