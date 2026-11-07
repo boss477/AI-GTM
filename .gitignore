@@ -29,3 +29,4 @@ great.md
 .env.*
 !.env.example
 invoice_system/invoices/
+invoice_system/*.pdf

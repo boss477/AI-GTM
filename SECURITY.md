@@ -31,5 +31,5 @@ changelog unless you prefer to stay anonymous.
 | -------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | Flask apps           | The debugger is off unless `FLASK_DEBUG=1`. It allows remote code execution; never enable it on a reachable host.           |
 | Agents and tools     | Agents act through explicit tools. Keep approval gates before any external action such as sending e-mail or messages.       |
-| Generated invoices   | `invoice_system/invoices/` holds generated PDFs that can contain customer and bank details. New files are git-ignored, but PDFs committed earlier are still tracked and in history: review them and remove any real customer data. |
-| Third-party code     | `agno/` and `langgraph/` are upstream copies; report their vulnerabilities upstream.                                        |
+| Generated invoices   | `invoice_system/invoices/` holds generated PDFs that can contain customer and bank details. New files are git-ignored, but PDFs committed earlier were removed from the current tree but **remain in Git history** until the history is rewritten; treat any customer or bank details in them as exposed. |
+| Dependencies         | Agno and LangGraph are installed from PyPI; report their vulnerabilities upstream. `.github/dependabot.yml` keeps the pinned requirements current. |
