@@ -16,8 +16,7 @@ changelog unless you prefer to stay anonymous.
 ## Secrets
 
 - All credentials are read from environment variables (see [.env.example](.env.example)). `.env` is
-  git-ignored. CI fails if a Supabase or Exa credential is committed outside the vendored
-  directories.
+  git-ignored. CI fails if a Supabase or Exa credential is committed anywhere in the repository.
 - **Credentials that were committed in earlier versions must be treated as compromised** even though
   the current code no longer contains them: Git history keeps them. Rotate the Exa API key and the
   Supabase keys of each project, and confirm Row Level Security is enabled on every table so the
