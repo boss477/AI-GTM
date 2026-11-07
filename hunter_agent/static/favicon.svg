@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="AI-GTM logo">
+  <defs>
+    <linearGradient id="g" gradientUnits="userSpaceOnUse" x1="16" y1="16" x2="496" y2="496">
+      <stop offset="0" stop-color="#c4b5fd"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="#120d1f" stroke="url(#g)" stroke-width="12"/>
+  <!-- three connected nodes forming a forward arrow -->
+  <path d="M130 150 L256 256 L130 362" fill="none" stroke="url(#g)" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M256 256 H388" stroke="url(#g)" stroke-width="26" stroke-linecap="round"/>
+  <circle cx="130" cy="150" r="36" fill="#120d1f" stroke="url(#g)" stroke-width="20"/>
+  <circle cx="130" cy="362" r="36" fill="#120d1f" stroke="url(#g)" stroke-width="20"/>
+  <circle cx="400" cy="256" r="36" fill="#120d1f" stroke="url(#g)" stroke-width="20"/>
+  <!-- strategist spark at the centre -->
+  <path d="M256 214 L268 244 L298 256 L268 268 L256 298 L244 268 L214 256 L244 244 Z" fill="#c4b5fd"/>
+</svg>

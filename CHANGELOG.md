@@ -14,6 +14,7 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- Project logo, a favicon for the dashboard, hunter and invoice web apps, and a GitHub social-preview image.
 - `.env.example`, `LICENSE` (MIT), security policy, contributing guide, code of conduct, issue and
   PR templates, and a README with setup and run instructions.
 - GitHub Actions CI: syntax check and a credential scan on the project's own code.
