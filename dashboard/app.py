@@ -9,9 +9,15 @@ from datetime import datetime, timezone
 from dotenv import load_dotenv
 from agno.tools.exa import ExaTools
 
-app = Flask(__name__)
-app.secret_key = "super_secret_key_for_demo_session"  # Required for session
+if __package__:
+    from .session_config import get_flask_session_secret
+else:
+    from session_config import get_flask_session_secret
+
 load_dotenv()
+
+app = Flask(__name__)
+app.secret_key = get_flask_session_secret(os.environ)
 
 
 def check_supabase_reachable(url, name):
@@ -25,7 +31,7 @@ def check_supabase_reachable(url, name):
         return True
     except socket.gaierror as e:
         print(f"[FAIL] {name} Supabase UNREACHABLE: {hostname} - {e}")
-        print(f"  -> Check if the Supabase project exists and the URL is correct.")
+        print("  -> Check if the Supabase project exists and the URL is correct.")
         return False
 
 
@@ -66,7 +72,7 @@ def handle_error(e):
     print(f"Global Error Caught: {e}")
     # Instead of crashing, we gracefully inform the user
     return (
-        f"<h3>⚠️ Internal Dashboard Error</h3><p>{str(e)}</p><p><a href='/'>Click here to refresh and try again.</a></p>",
+        "<h3>⚠️ Internal Dashboard Error</h3><p>Internal error</p><p><a href='/'>Click here to refresh and try again.</a></p>",
         500,
     )
 
@@ -107,7 +113,7 @@ def hunter_agent_search(city, segment, limit):
     search_results_json = exa_tools.search_exa(query=query, num_results=int(limit))
     try:
         results = json.loads(search_results_json)
-    except:
+    except Exception:
         results = []
 
     leads = []
@@ -121,7 +127,7 @@ def hunter_agent_search(city, segment, limit):
                 "intent_score": score_intent(text_content or ""),
                 "city": city,
                 "segment": segment,
-                "status": "NEW",  # Default status for new leads
+                "status": "NEW",
             }
         )
     return leads
@@ -146,15 +152,13 @@ def parse_strategies():
             title = lines[0].replace("##", "").strip()
             hook = "N/A"
             reflection = "N/A"
-            for i, line in enumerate(lines):
+            for line in lines:
                 if "**Hook:**" in line:
                     hook = line.split("**Hook:**")[1].strip()
                 if "**Strategy Reflection:**" in line:
                     reflection = line.split("**Strategy Reflection:**")[1].strip()
-            strategies.append(
-                {"company": title, "hook": hook, "reflection": reflection}
-            )
-    except:
+            strategies.append({"company": title, "hook": hook, "reflection": reflection})
+    except Exception:
         pass
     return strategies
 
@@ -171,15 +175,12 @@ def dashboard():
         )
 
     query = hunter_db.table("leads").select("*").order("created_at", desc=True)
-
     last_search_time = session.get("last_search_time")
-    search_limit = session.get("search_limit", 10)  # Default to 10 if not set
+    search_limit = session.get("search_limit", 10)
 
     if last_search_time:
-        # Show leads created AFTER the search button was clicked (with a small buffer)
         query = query.gte("created_at", last_search_time).limit(int(search_limit))
     else:
-        # Fallback: Show latest 10
         query = query.limit(10)
 
     try:
@@ -223,8 +224,7 @@ def search_leads():
         return jsonify(
             {
                 "status": "error",
-                "message": f"Hunter Supabase is not reachable at {HUNTER_URL}. "
-                "Check if the project exists at https://supabase.com/dashboard",
+                "message": f"Hunter Supabase is not reachable at {HUNTER_URL}. Check if the project exists at https://supabase.com/dashboard",
             }
         ), 503
 
@@ -270,11 +270,8 @@ def create_invoice_route():
 
         if "Invoice created successfully" in result.stdout:
             return redirect(url_for("dashboard"))
-        else:
-            err_msg = f"{result.stdout}\n{result.stderr}".strip()
-            return jsonify(
-                {"status": "error", "message": err_msg}
-            )
+        err_msg = f"{result.stdout}\n{result.stderr}".strip()
+        return jsonify({"status": "error", "message": err_msg})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)})
 
