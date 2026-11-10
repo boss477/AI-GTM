@@ -1,19 +1,25 @@
-<div align="center">
+<p align="center"><img src="docs/images/logo.svg" alt="AI-GTM logo" width="112" /></p>
 
-<img src="docs/images/logo.svg" alt="AI-GTM logo" width="128" />
+<h1 align="center">AI-GTM</h1>
 
-# AI-GTM
+<p align="center"><strong>Turn market signals into approved GTM work your team can execute.</strong></p>
 
-**Turn market signals into approved GTM work your team can execute.**
+<p align="center">
+A strategy workbench for research, planning, approval and execution. It combines agent workflows with
+operational tools instead of an ungrounded chatbot, and nothing external happens without an explicit
+approval.
+</p>
 
-A strategy workbench for research, planning, approval and execution, combining agent workflows with
-operational tools instead of an ungrounded chatbot.
+<p align="center">
+  <a href="https://github.com/boss477/AI-GTM/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/boss477/AI-GTM/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="LICENSE"><img alt="license: MIT" src="https://img.shields.io/badge/license-MIT-2b3ea8"></a>
+  <img alt="python: 3.10+" src="https://img.shields.io/badge/python-3.10%2B-2b3ea8?logo=python&logoColor=white">
+  <a href="https://boss477.github.io/AI-GTM/"><img alt="website: boss477.github.io" src="https://img.shields.io/badge/website-boss477.github.io-2b3ea8"></a>
+</p>
 
-[![CI](https://github.com/boss477/AI-GTM/actions/workflows/ci.yml/badge.svg)](https://github.com/boss477/AI-GTM/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-![Python](https://img.shields.io/badge/python-3.10%2B-3776ab)
+<p align="center"><a href="https://boss477.github.io/AI-GTM/"><img src="docs/images/landing-page.webp" alt="The AI-GTM project page" width="100%"></a></p>
 
-</div>
+<sub>The project page, with the strategy workflow and its approval gate.</sub>
 
 ## Contents
 
