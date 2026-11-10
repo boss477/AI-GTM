@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI-GTM, a go-to-market strategy workbench</title>
+<meta name="description" content="AI-GTM turns market signals into approved go-to-market work: a strategy workbench for research, planning, approval and execution, with explicit approval gates.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="container">
+  <header class="nav">
+    <a class="wordmark" href="#main">AI-GTM</a>
+    <nav aria-label="Page">
+      <ul>
+        <li><a href="#parts">Components</a></li>
+        <li><a href="#rules">Principles</a></li>
+        <li><a href="#run">Set up</a></li>
+        <li><a href="https://github.com/boss477/AI-GTM">GitHub</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero" id="main">
+    <div>
+      <h1>Market signals in, <span class="misreg" data-text="approved">approved</span> work out</h1>
+      <p class="lead">A strategy workbench for research, planning, approval and execution.</p>
+      <div class="actions">
+        <a class="btn btn--primary" href="https://github.com/boss477/AI-GTM">Clone the workbench</a>
+        <a class="btn btn--secondary" href="#parts">See the components</a>
+      </div>
+    </div>
+    <figure>
+      <ol class="plan" aria-label="The strategy workflow, a diagram of the real system">
+        <li>Market signal</li>
+        <li>Research brief</li>
+        <li>Strategist agent</li>
+        <li class="gate">Approved campaign plan</li>
+        <li>Tool execution</li>
+        <li>Outcome feedback</li>
+      </ol>
+      <figcaption>Feedback returns to the research brief.</figcaption>
+    </figure>
+  </section>
+</div>
+
+<main>
+<section class="parts" id="parts">
+  <div class="container">
+    <h2>Five working parts</h2>
+    <ul class="rows">
+      <li class="cols"><h3>Strategist agent</h3><p>Strategy workflows and tools.</p><small>strategist_agent/</small></li>
+      <li class="cols"><h3>Hunter agent</h3><p>Lead hunting with Exa search and Supabase storage.</p><small>hunter_agent/</small></li>
+      <li class="cols"><h3>Furniture agent</h3><p>Lead scoring, a Streamlit screen and a Telegram bot.</p><small>furniture-agent/</small></li>
+      <li class="cols"><h3>Invoice system</h3><p>Invoices and proformas as PDFs, e-mailed on a schedule.</p><small>invoice_system/</small></li>
+      <li class="cols"><h3>ARIA</h3><p>One agent with the strategist, hunter and invoice skills.</p><small>unified_agent.py</small></li>
+    </ul>
+  </div>
+</section>
+
+<section class="band grained">
+  <div class="container">
+    <p>No external action without an explicit approval.</p>
+    <p>The gate sits between the plan and the tools that carry it out.</p>
+  </div>
+</section>
+
+<section class="rules" id="rules">
+  <div class="container cols">
+    <div class="rules__text">
+      <h2>Four rules it keeps</h2>
+    </div>
+    <ol>
+      <li>Agent reasoning is visible and reviewable</li>
+      <li>Approval gates come before external actions</li>
+      <li>Tool boundaries and credentials are documented</li>
+      <li>Research stays tied to an executable next step</li>
+    </ol>
+  </div>
+</section>
+
+<section class="run" id="run">
+  <div class="container cols">
+    <div class="run__text">
+      <h2>Set it up with Python</h2>
+      <p class="lead">Every credential comes from your own environment file.</p>
+      <div class="actions"><a class="btn btn--secondary" href="https://github.com/boss477/AI-GTM#setup">Read the setup notes</a></div>
+    </div>
+    <figure>
+      <pre tabindex="0" aria-label="Setup commands"><code>git clone https://github.com/boss477/AI-GTM.git
+cd AI-GTM
+python -m venv .venv
+source .venv/bin/activate
+pip install -r hunter_agent/requirements.txt
+cp .env.example .env
+python dashboard/app.py</code></pre>
+      <figcaption>Python 3.10 or newer. The dashboard opens on 127.0.0.1:5000.</figcaption>
+    </figure>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="container cols">
+    <a class="wordmark" href="#main">AI-GTM</a>
+    <ul>
+      <li><a href="https://github.com/boss477/AI-GTM">Repository</a></li>
+      <li><a href="https://github.com/boss477/AI-GTM/blob/main/DESIGN.md">Product design</a></li>
+      <li><a href="https://github.com/boss477/AI-GTM/blob/main/SECURITY.md">Security</a></li>
+    </ul>
+    <small>MIT licence.</small>
+  </div>
+</footer>
+</body>
+</html>
