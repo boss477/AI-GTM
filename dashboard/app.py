@@ -1,6 +1,7 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, session
 from supabase import create_client, Client
 import os
+import secrets
 import json
 import re
 import subprocess
@@ -10,7 +11,7 @@ from dotenv import load_dotenv
 from agno.tools.exa import ExaTools
 
 app = Flask(__name__)
-app.secret_key = "super_secret_key_for_demo_session"  # Required for session
+app.secret_key = os.environ.get("FLASK_SECRET_KEY") or secrets.token_hex(32)  # Required for session
 load_dotenv()
 
 
